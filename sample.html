@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ShutterVerse | Visual Storytelling</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0a;
+    --bg2: #111110;
+    --bg3: #161614;
+    --fg: #f0ede6;
+    --fg2: #a09d96;
+    --fg3: #5a5854;
+    --accent: #c9a96e;
+    --accent2: #e8d5b0;
+    --border: rgba(240,237,230,0.08);
+    --border2: rgba(240,237,230,0.15);
+    --display: 'Cormorant Garamond', serif;
+    --body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(12,12,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+  nav ul {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  nav a {
+    color: var(--fg2);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--fg); }
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent) !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 2px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent); color: var(--bg) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 2rem 4rem;
+    background:
+      linear-gradient(to bottom, rgba(12,12,10,0.6) 0%, rgba(12,12,10,0.2) 40%, rgba(12,12,10,0.85) 100%),
+      url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1800&q=80') center/cover no-repeat;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-family: var(--body);
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 300;
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent2);
+  }
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--fg2);
+    max-width: 420px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    padding: 0.85rem 2rem;
+    border-radius: 2px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: var(--body);
+    font-weight: 500;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-ghost {
+    border: 1px solid var(--border2);
+    color: var(--fg);
+    padding: 0.85rem 2rem;
+    border-radius: 2px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: var(--body);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--fg3);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: var(--display);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg3);
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 0;
+    background: var(--bg2);
+  }
+  .marquee {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee span {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fg3);
+    flex-shrink: 0;
+  }
+  .marquee span.dot {
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 3rem; }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--fg);
+    margin-bottom: 1.5rem;
+  }
+  .section-title em { font-style: italic; color: var(--accent2); }
+  .section-body {
+    font-size: 0.95rem;
+    color: var(--fg2);
+    max-width: 500px;
+    line-height: 1.8;
+  }
+
+  /* ── ABOUT SPLIT ── */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    background: var(--bg2);
+  }
+  .about-img {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .about-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%);
+    transition: filter 0.4s;
+  }
+  .about-img:hover img { filter: grayscale(0%); }
+  .about-text { padding: 2rem 0; }
+  .about-text .section-body { max-width: 100%; margin-bottom: 2rem; }
+  .about-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .about-link:hover { color: var(--fg); border-color: var(--fg); }
+
+  /* ── ALBUMS GRID ── */
+  .albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 3rem;
+  }
+  .album-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .album-card:first-child, .album-card:last-child {
+    grid-row: span 1;
+  }
+  .album-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.4s;
+    filter: brightness(0.75);
+  }
+  .album-card:hover img {
+    transform: scale(1.04);
+    filter: brightness(0.9);
+  }
+  .album-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+  .album-tag {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+  .album-name {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--fg);
+    line-height: 1.2;
+  }
+  .albums-footer {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+
+  /* ── EXPERTISE ── */
+  .expertise {
+    background: var(--bg3);
+  }
+  .expertise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3.5rem;
+  }
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .expertise-card {
+    background: var(--bg3);
+    padding: 2.5rem;
+    transition: background 0.2s;
+  }
+  .expertise-card:hover { background: var(--bg2); }
+  .expertise-icon {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+  }
+  .expertise-card h3 {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--fg);
+    margin-bottom: 0.75rem;
+  }
+  .expertise-card p {
+    font-size: 0.88rem;
+    color: var(--fg3);
+    line-height: 1.75;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--bg); }
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+  .testimonials-header .section-label { justify-content: center; display: block; }
+  .reviews-meta {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+  .reviews-meta span {
+    font-size: 13px;
+    color: var(--fg3);
+  }
+  .reviews-meta strong {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 1.1rem;
+    display: block;
+    font-family: var(--display);
+  }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .testimonial-card {
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 2rem;
+    background: var(--bg2);
+    transition: border-color 0.2s;
+  }
+  .testimonial-card:hover { border-color: var(--border2); }
+  .stars {
+    color: var(--accent);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .testimonial-text {
+    font-family: var(--display);
+    font-size: 1.1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--fg2);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .author-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .author-role {
+    font-size: 11px;
+    color: var(--fg3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── BLOG ── */
+  .blog { background: var(--bg2); }
+  .blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .blog-card { cursor: pointer; }
+  .blog-img {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 2px;
+    margin-bottom: 1.25rem;
+  }
+  .blog-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+    filter: brightness(0.85);
+  }
+  .blog-card:hover .blog-img img { transform: scale(1.04); }
+  .blog-meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.6rem;
+  }
+  .blog-tag {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(201,169,110,0.1);
+    padding: 2px 8px;
+    border-radius: 1px;
+  }
+  .blog-date {
+    font-size: 11px;
+    color: var(--fg3);
+  }
+  .blog-title {
+    font-family: var(--display);
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--fg);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+  .blog-excerpt {
+    font-size: 0.85rem;
+    color: var(--fg3);
+    line-height: 1.7;
+  }
+
+  /* ── FAQ ── */
+  .faq { background: var(--bg); }
+  .faq-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .faq-header { text-align: center; margin-bottom: 3rem; }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--fg);
+    gap: 1rem;
+  }
+  .faq-q:hover { color: var(--accent); }
+  .faq-icon {
+    font-size: 1.2rem;
+    color: var(--fg3);
+    flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.3s;
+    font-size: 0.9rem;
+    color: var(--fg3);
+    line-height: 1.8;
+    padding: 0;
+  }
+  .faq-item.open .faq-a {
+    max-height: 200px;
+    padding-bottom: 1.5rem;
+  }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    padding: 6rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(201,169,110,0.08) 0%, transparent 60%),
+      var(--bg3);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .cta-banner h2 {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 300;
+    color: var(--fg);
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+  .cta-banner h2 em { font-style: italic; color: var(--accent2); }
+  .cta-banner p {
+    color: var(--fg3);
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 3rem 3rem 2rem;
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand .logo {
+    display: block;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .footer-brand p {
+    font-size: 0.85rem;
+    color: var(--fg3);
+    line-height: 1.8;
+    max-width: 220px;
+  }
+  .footer-col h4 {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fg2);
+    margin-bottom: 1.2rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.65rem; }
+  .footer-col a {
+    font-size: 0.9rem;
+    color: var(--fg3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--accent); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--fg3);
+  }
+  .social-links { display: flex; gap: 1rem; }
+  .social-links a {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg3);
+    text-decoration: none;
+    font-size: 14px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .social-links a:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .about { grid-template-columns: 1fr; gap: 2rem; }
+    .albums-grid { grid-template-columns: repeat(2, 1fr); }
+    .expertise-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .blog-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Life.<span>To</span>.Lenz</a>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#blog">Journal</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Book a Session</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <p class="hero-eyebrow">Creative Photography & Visual Storytelling</p>
+  <h1>Every Frame<br>Tells a <em>Story</em></h1>
+  <p class="hero-sub">We preserve moments that matter — through cinematic photography and visual narratives built to last.</p>
+  <div class="hero-actions">
+    <a href="#work" class="btn-primary">Explore Portfolio</a>
+    <a href="#contact" class="btn-ghost">Start Your Story →</a>
+  </div>
+  <!-- <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div> -->
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num" data-target="500">0</div>
+    <div class="stat-label">Hours Behind the Lens</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" data-target="12">0</div>
+    <div class="stat-label">Thousand Moments Captured</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" data-target="18">0</div>
+    <div class="stat-label">Awards & Recognitions</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" data-target="47">0</div>
+    <div class="stat-label">Happy Clients</div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Event Photography</span><span class="dot">✦</span>
+    <span>Wedding Stories</span><span class="dot">✦</span>
+    <span>Corporate Shoots</span><span class="dot">✦</span>
+    <span>Portrait Sessions</span><span class="dot">✦</span>
+    <span>Wildlife & Nature</span><span class="dot">✦</span>
+    <span>Sports & Action</span><span class="dot">✦</span>
+    <span>Aerial Photography</span><span class="dot">✦</span>
+    <span>Event Photography</span><span class="dot">✦</span>
+    <span>Wedding Stories</span><span class="dot">✦</span>
+    <span>Corporate Shoots</span><span class="dot">✦</span>
+    <span>Portrait Sessions</span><span class="dot">✦</span>
+    <span>Wildlife & Nature</span><span class="dot">✦</span>
+    <span>Sports & Action</span><span class="dot">✦</span>
+    <span>Aerial Photography</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-img">
+    <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&q=80" alt="Photographer at work" loading="lazy" />
+  </div>
+  <div class="about-text">
+    <p class="section-label">Our Story</p>
+    <h2 class="section-title">Built on <em>Real Moments</em></h2>
+    <p class="section-body">ShutterVerse grew from a quiet curiosity into a creative photography brand rooted in authentic emotion, cinematic vision, and the belief that every meaningful memory deserves to be preserved with intention.<br><br>We work with individuals, businesses, and communities — turning experiences into visual stories you'll carry for a lifetime.</p>
+    <br />
+    <a href="#about" class="about-link">Learn More About Us</a>
+  </div>
+</section>
+
+<!-- ALBUMS -->
+<section style="padding: 6rem 3rem; background: var(--bg);" id="work">
+  <p class="section-label">Portfolio</p>
+  <h2 class="section-title">Selected <em>Albums</em></h2>
+  <div class="albums-grid">
+    <div class="album-card">
+      <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=600&q=80" alt="Sports Meet" loading="lazy" />
+      <div class="album-overlay">
+        <p class="album-tag">Sports</p>
+        <p class="album-name">Sports Meet '25</p>
+      </div>
+    </div>
+    <div class="album-card">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80" alt="Wedding" loading="lazy" />
+      <div class="album-overlay">
+        <p class="album-tag">Wedding</p>
+        <p class="album-name">The Mehta Wedding</p>
+      </div>
+    </div>
+    <div class="album-card">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Nature" loading="lazy" />
+      <div class="album-overlay">
+        <p class="album-tag">Wildlife</p>
+        <p class="album-name">Voice of Birds</p>
+      </div>
+    </div>
+    <div class="album-card">
+      <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80" alt="Event" loading="lazy" />
+      <div class="album-overlay">
+        <p class="album-tag">Event</p>
+        <p class="album-name">TEDx Summit</p>
+      </div>
+    </div>
+    <div class="album-card">
+      <img src="https://images.unsplash.com/photo-1524863479829-916d8e77f114?w=600&q=80" alt="Portrait" loading="lazy" />
+      <div class="album-overlay">
+        <p class="album-tag">Portrait</p>
+        <p class="album-name">Power of Smile</p>
+      </div>
+    </div>
+    <div class="album-card">
+      <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&q=80" alt="Culture" loading="lazy" />
+      <div class="album-overlay">
+        <p class="album-tag">Culture</p>
+        <p class="album-name">Sangamam '26</p>
+      </div>
+    </div>
+  </div>
+  <div class="albums-footer">
+    <a href="#" class="btn-ghost">View All Albums →</a>
+  </div>
+</section>
+
+<!-- EXPERTISE -->
+<section class="expertise" id="services">
+  <div class="expertise-header">
+    <div>
+      <p class="section-label">What We Do</p>
+      <h2 class="section-title">Our <em>Expertise</em></h2>
+    </div>
+    <a href="#contact" class="btn-ghost">Book a Session →</a>
+  </div>
+  <div class="expertise-grid">
+    <div class="expertise-card">
+      <div class="expertise-icon">📸</div>
+      <h3>Event Photography</h3>
+      <p>Real moments, real emotions, real highlights — captured as they unfold. Stage performances, candid reactions, timeless memories.</p>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">💍</div>
+      <h3>Wedding Storytelling</h3>
+      <p>Every wedding is a story waiting to be told. We document the laughter, the tears, and every beautiful detail in between.</p>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🏢</div>
+      <h3>Corporate Photography</h3>
+      <p>Polished visuals that reflect your brand identity — team portraits, corporate events, and workplace moments that build trust.</p>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🦅</div>
+      <h3>Wildlife & Nature</h3>
+      <p>Patience, passion, and a long lens — we pursue nature's fleeting beauty across forests, wetlands, and open skies.</p>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🚁</div>
+      <h3>Aerial Photography</h3>
+      <p>A bird's-eye perspective captured via drone, perfect for real estate, events, landscapes, and cinematic establishing shots.</p>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🎨</div>
+      <h3>Editing & Retouching</h3>
+      <p>Professional post-processing to elevate every frame — colour grading, skin retouching, and cinematic finishing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="testimonials-header">
+    <p class="section-label">Client Voices</p>
+    <h2 class="section-title">What Our <em>Clients Say</em></h2>
+    <div class="reviews-meta">
+      <span><strong>47</strong>Clients Served</span>
+      <span><strong>4.8★</strong>Average Rating</span>
+      <span><strong>3 Yrs</strong>Experience</span>
+    </div>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"We came in with a loose moodboard and a lot of ideas. ShutterVerse helped us turn that into a shoot that actually felt like us. The final images gave us strong content for both social and our website."</p>
+      <div class="testimonial-author">
+        <div class="avatar">YF</div>
+        <div>
+          <p class="author-name">Young Frames</p>
+          <p class="author-role">Creative Team</p>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Usually after an event we only get a few usable photos. This time even the in-between moments were captured beautifully. Delivery was quick, edits felt natural, the gallery brought the day back for us."</p>
+      <div class="testimonial-author">
+        <div class="avatar">KS</div>
+        <div>
+          <p class="author-name">Keerthana S.</p>
+          <p class="author-role">Event Coordinator</p>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"I was honestly worried about feeling awkward in front of the camera, but the shoot felt relaxed from minute one. The direction was simple, and the final portraits looked confident without feeling over-edited."</p>
+      <div class="testimonial-author">
+        <div class="avatar">MN</div>
+        <div>
+          <p class="author-name">Meera Nair</p>
+          <p class="author-role">Founder, Aster Studio</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="blog" id="blog">
+  <div class="blog-header">
+    <div>
+      <p class="section-label">Insights</p>
+      <h2 class="section-title">From the <em>Journal</em></h2>
+    </div>
+    <a href="#" class="btn-ghost">All Articles →</a>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-card">
+      <div class="blog-img">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80" alt="Golden Hour" loading="lazy" />
+      </div>
+      <div class="blog-meta">
+        <span class="blog-tag">Tips</span>
+        <span class="blog-date">May 6, 2024</span>
+      </div>
+      <h3 class="blog-title">Capturing the Magic of Golden Hour</h3>
+      <p class="blog-excerpt">A photographer's guide to working with the most flattering light of the day — timing, technique, and the patience it takes.</p>
+    </div>
+    <div class="blog-card">
+      <div class="blog-img">
+        <img src="https://images.unsplash.com/photo-1495121553079-4c61bcce1894?w=600&q=80" alt="Candid" loading="lazy" />
+      </div>
+      <div class="blog-meta">
+        <span class="blog-tag">Tips</span>
+        <span class="blog-date">Apr 19, 2024</span>
+      </div>
+      <h3 class="blog-title">The Art of Candid Photography</h3>
+      <p class="blog-excerpt">How to capture natural, unguarded moments that feel honest — from blending in to anticipating emotion before it peaks.</p>
+    </div>
+    <div class="blog-card">
+      <div class="blog-img">
+        <img src="https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?w=600&q=80" alt="Presets" loading="lazy" />
+      </div>
+      <div class="blog-meta">
+        <span class="blog-tag">Resources</span>
+        <span class="blog-date">Mar 6, 2024</span>
+      </div>
+      <h3 class="blog-title">Elevate Photos with Signature Color Grading</h3>
+      <p class="blog-excerpt">A breakdown of the color grading approach behind our most-recognized work — and what makes a preset feel like a voice, not a filter.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <p class="section-label">Questions</p>
+      <h2 class="section-title">Common <em>FAQ</em></h2>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What types of photography do you offer?
+        <span class="faq-icon">+</span>
+      </button>
+      <p class="faq-a">We specialize in event, wedding, corporate, portrait, wildlife, aerial, and sports photography. We also offer professional editing and post-production services for existing photo libraries.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do I book a session?
+        <span class="faq-icon">+</span>
+      </button>
+      <p class="faq-a">Simply reach out via our Contact page or WhatsApp. Share your event details, preferred dates, and location — we'll get back to you within 24 hours with availability and a quote.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How long until I receive the final photos?
+        <span class="faq-icon">+</span>
+      </button>
+      <p class="faq-a">Turnaround depends on the scope of the project. Event galleries are typically delivered within 5–7 working days. Portrait sessions and smaller shoots within 3–4 days. We always communicate expected timelines upfront.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Do you travel for shoots?
+        <span class="faq-icon">+</span>
+      </button>
+      <p class="faq-a">Yes — we're based in Coimbatore but travel across Tamil Nadu and beyond for weddings, corporate shoots, and special projects. Travel costs are discussed transparently during booking.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What is your editing style?
+        <span class="faq-icon">+</span>
+      </button>
+      <p class="faq-a">Our editing is cinematic and intentional — clean color grading, natural skin tones, and finishing that feels timeless rather than trend-driven. We don't over-edit; we refine and elevate what was already there.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner" id="contact">
+  <p class="section-label" style="display:block; text-align:center; margin-bottom:0.75rem;">Ready to Begin?</p>
+  <h2>Let's Create<br><em>Something Real</em></h2>
+  <p>Tell us your story. We'll bring the camera.</p>
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <a href="mailto:hello@shutterverse.in" class="btn-primary">Get in Touch</a>
+    <a href="https://wa.me/919000000000" class="btn-ghost">WhatsApp Us →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="logo">Shutter<span>Verse</span></a>
+      <p>Creative photography and visual storytelling. Preserving moments that matter, one frame at a time.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Portfolio</a></li>
+        <li><a href="#">Reviews</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Event Photography</a></li>
+        <li><a href="#">Wedding Stories</a></li>
+        <li><a href="#">Corporate Shoots</a></li>
+        <li><a href="#">Aerial Photography</a></li>
+        <li><a href="#">Editing & Retouch</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Facebook</a></li>
+        <li><a href="#">Twitter / X</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ShutterVerse. All rights reserved.</span>
+    <div class="social-links">
+      <a href="#" aria-label="Instagram">IG</a>
+      <a href="#" aria-label="Twitter">X</a>
+      <a href="#" aria-label="LinkedIn">in</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ Toggle
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Counter animation
+  const counters = document.querySelectorAll('[data-target]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        let start = 0;
+        const duration = 1500;
+        const step = target / (duration / 16);
+        const timer = setInterval(() => {
+          start = Math.min(start + step, target);
+          el.textContent = Math.floor(start) + suffix;
+          if (start >= target) clearInterval(timer);
+        }, 16);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  counters.forEach(c => observer.observe(c));
+
+  // Sticky nav background
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.background = window.scrollY > 60
+      ? 'rgba(12,12,10,0.98)'
+      : 'rgba(12,12,10,0.85)';
+  });
+</script>
+</body>
+</html>

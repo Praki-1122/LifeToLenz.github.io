@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Journal | ShutterVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0c0a; --bg2: #111110; --bg3: #161614;
+    --fg: #f0ede6; --fg2: #a09d96; --fg3: #5a5854;
+    --accent: #c9a96e; --accent2: #e8d5b0;
+    --border: rgba(240,237,230,0.08); --border2: rgba(240,237,230,0.15);
+  }
+  body { background: var(--bg); color: var(--fg); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.7; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 3rem; background: rgba(12,12,10,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--fg); text-decoration: none; }
+  .logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 2.5rem; list-style: none; }
+  nav a { color: var(--fg2); text-decoration: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  nav a:hover, nav a.active { color: var(--fg); }
+  .nav-cta { border: 1px solid var(--accent); color: var(--accent) !important; padding: 0.5rem 1.25rem; border-radius: 2px; font-size: 12px; letter-spacing: 0.1em; transition: background 0.2s, color 0.2s; }
+  .nav-cta:hover { background: var(--accent); color: var(--bg) !important; }
+
+  /* PAGE HEADER */
+  .page-header { padding: 10rem 3rem 5rem; background: var(--bg2); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .page-header::before { content: ''; position: absolute; top: 0; right: 0; width: 40%; height: 100%; background: radial-gradient(ellipse at top right, rgba(201,169,110,0.07) 0%, transparent 60%); }
+  .page-eyebrow { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 300; line-height: 1.0; color: var(--fg); }
+  .page-title em { font-style: italic; color: var(--accent2); }
+  .page-sub { margin-top: 1rem; color: var(--fg3); font-size: 0.95rem; max-width: 520px; }
+  .header-meta { display: flex; gap: 2.5rem; margin-top: 2.5rem; }
+  .header-meta-item strong { display: block; font-size: 1.5rem; font-family: 'Cormorant Garamond', serif; color: var(--accent); font-weight: 300; }
+  .header-meta-item span { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg3); }
+
+  /* FILTER */
+  .filter-bar { display: flex; gap: 0.6rem; padding: 1.5rem 3rem; border-bottom: 1px solid var(--border); background: var(--bg); flex-wrap: wrap; }
+  .tag-btn { background: none; border: 1px solid var(--border); color: var(--fg3); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.45rem 1rem; border-radius: 2px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .tag-btn:hover, .tag-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  /* FEATURED ARTICLE */
+  .featured { padding: 4rem 3rem; border-bottom: 1px solid var(--border); }
+  .featured-inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center; }
+  .featured-img { aspect-ratio: 4/3; overflow: hidden; border-radius: 2px; }
+  .featured-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: transform 0.6s, filter 0.4s; }
+  .featured-img:hover img { transform: scale(1.03); filter: brightness(1); }
+  .featured-tag { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); background: rgba(201,169,110,0.1); padding: 3px 10px; border-radius: 1px; display: inline-block; margin-bottom: 1rem; }
+  .featured-badge { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg3); margin-bottom: 1.5rem; }
+  .featured-badge span { color: var(--accent); }
+  .featured-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 300; color: var(--fg); line-height: 1.15; margin-bottom: 1.25rem; }
+  .featured-title em { font-style: italic; color: var(--accent2); }
+  .featured-excerpt { font-size: 0.92rem; color: var(--fg3); line-height: 1.85; margin-bottom: 1.75rem; }
+  .featured-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+  .author-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+  .meta-text { font-size: 12px; color: var(--fg3); }
+  .meta-text strong { color: var(--fg2); font-weight: 500; display: block; }
+  .read-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent); text-decoration: none; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid rgba(201,169,110,0.3); padding-bottom: 2px; transition: border-color 0.2s; }
+  .read-link:hover { border-color: var(--accent); }
+
+  /* ARTICLES GRID */
+  .articles-section { padding: 4rem 3rem 5rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 2rem; }
+  .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .article-card { cursor: pointer; }
+  .article-card:hover .art-img img { transform: scale(1.04); filter: brightness(1); }
+  .art-img { aspect-ratio: 4/3; overflow: hidden; border-radius: 2px; margin-bottom: 1.25rem; position: relative; }
+  .art-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: transform 0.5s, filter 0.4s; }
+  .art-img .read-time { position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(0,0,0,0.65); color: var(--fg3); font-size: 10px; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 1px; }
+  .art-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.65rem; }
+  .art-tag { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); background: rgba(201,169,110,0.1); padding: 2px 8px; border-radius: 1px; }
+  .art-date { font-size: 11px; color: var(--fg3); }
+  .art-title { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 400; color: var(--fg); line-height: 1.3; margin-bottom: 0.6rem; }
+  .art-excerpt { font-size: 0.87rem; color: var(--fg3); line-height: 1.75; margin-bottom: 1rem; }
+
+  /* INSPIRATION QUOTE BLOCKS */
+  .inspiration-block { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4rem 3rem; margin: 0; }
+  .insp-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+  .insp-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg3); margin-bottom: 1.5rem; }
+  .insp-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 300; font-style: italic; color: var(--fg2); line-height: 1.5; margin-bottom: 1.25rem; }
+  .insp-author { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+  .insp-divider { width: 40px; height: 1px; background: var(--accent); margin: 1.25rem auto; }
+
+  /* PHOTO INSPIRATION GRID */
+  .inspo-grid { padding: 4rem 3rem; background: var(--bg3); border-bottom: 1px solid var(--border); }
+  .inspo-grid-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; color: var(--fg); margin-bottom: 0.5rem; }
+  .inspo-grid-sub { font-size: 0.88rem; color: var(--fg3); margin-bottom: 2rem; }
+  .photo-inspo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .inspo-item { position: relative; aspect-ratio: 3/4; overflow: hidden; cursor: pointer; }
+  .inspo-item img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7) grayscale(30%); transition: filter 0.4s, transform 0.5s; }
+  .inspo-item:hover img { filter: brightness(1) grayscale(0%); transform: scale(1.04); }
+  .inspo-overlay { position: absolute; inset: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%); opacity: 0; transition: opacity 0.3s; }
+  .inspo-item:hover .inspo-overlay { opacity: 1; }
+  .inspo-theme { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+  .inspo-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--fg); font-weight: 300; }
+  .inspo-desc { font-size: 11px; color: var(--fg3); margin-top: 0.25rem; line-height: 1.5; }
+
+  /* LOAD MORE */
+  .load-more-wrap { text-align: center; padding: 3rem; }
+  .btn-ghost { border: 1px solid var(--border2); color: var(--fg); padding: 0.85rem 2.5rem; border-radius: 2px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; font-family: 'DM Sans', sans-serif; background: none; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--fg3); }
+
+  @media (max-width: 900px) {
+    nav ul { display: none; }
+    nav { padding: 1rem 1.5rem; }
+    .page-header { padding: 8rem 1.5rem 3rem; }
+    .featured-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .articles-grid { grid-template-columns: 1fr; }
+    .photo-inspo-grid { grid-template-columns: repeat(2, 1fr); }
+    .featured, .articles-section, .inspo-grid { padding: 3rem 1.5rem; }
+    .filter-bar { padding: 1.25rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Shutter<span>Verse</span></a>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="work.html">Work</a></li>
+    <li><a href="articles.html" class="active">Journal</a></li>
+    <li><a href="booking.html">Book</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="booking.html" class="nav-cta">Book a Session</a>
+</nav>
+
+<div class="page-header">
+  <p class="page-eyebrow">Journal & Stories</p>
+  <h1 class="page-title">From the <em>Field</em></h1>
+  <p class="page-sub">Reflections, inspirations, and the stories behind every frame. Tips, techniques, and the quiet obsessions that drive us to keep shooting.</p>
+  <div class="header-meta">
+    <div class="header-meta-item"><strong>24</strong><span>Articles</span></div>
+    <div class="header-meta-item"><strong>6</strong><span>Categories</span></div>
+    <div class="header-meta-item"><strong>3 Yrs</strong><span>Of Writing</span></div>
+  </div>
+</div>
+
+<!-- FILTER TAGS -->
+<div class="filter-bar">
+  <button class="tag-btn active">All</button>
+  <button class="tag-btn">Tips & Technique</button>
+  <button class="tag-btn">Behind the Shot</button>
+  <button class="tag-btn">Gear & Tools</button>
+  <button class="tag-btn">Inspiration</button>
+  <button class="tag-btn">Editing</button>
+  <button class="tag-btn">Stories</button>
+</div>
+
+<!-- FEATURED -->
+<div class="featured">
+  <div class="featured-inner">
+    <div class="featured-img">
+      <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=80" alt="Golden Hour" />
+    </div>
+    <div>
+      <p class="featured-badge"><span>✦ Featured Story</span> — May 6, 2025</p>
+      <span class="featured-tag">Tips & Technique</span>
+      <h2 class="featured-title">Capturing the Magic of <em>Golden Hour</em></h2>
+      <p class="featured-excerpt">It lasts maybe forty minutes. Sometimes twenty. The light drops below the horizon, bends through the atmosphere, and turns the world into a painting no artist planned. Working within that window demands preparation, patience, and a willingness to let the scene dictate the shot — not the other way around.</p>
+      <div class="featured-meta">
+        <div class="author-avatar">SV</div>
+        <div class="meta-text"><strong>ShutterVerse Team</strong>8 min read</div>
+      </div>
+      <a href="#" class="read-link">Read Article →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ARTICLES GRID: TIPS -->
+<div class="articles-section">
+  <p class="section-label">Tips & Technique</p>
+  <div class="articles-grid">
+    <div class="article-card">
+      <div class="art-img">
+        <img src="https://images.unsplash.com/photo-1495121553079-4c61bcce1894?w=600&q=80" alt="Candid" />
+        <span class="read-time">6 min</span>
+      </div>
+      <div class="art-tags"><span class="art-tag">Tips</span><span class="art-date">Apr 19, 2025</span></div>
+      <h3 class="art-title">The Art of Candid Photography</h3>
+      <p class="art-excerpt">How to capture natural, unguarded moments — from blending in to anticipating emotion before it peaks. The candid photograph is the truest portrait.</p>
+      <a href="#" class="read-link" style="font-size:11px;">Read More →</a>
+    </div>
+    <div class="article-card">
+      <div class="art-img">
+        <img src="https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?w=600&q=80" alt="Editing" />
+        <span class="read-time">7 min</span>
+      </div>
+      <div class="art-tags"><span class="art-tag">Editing</span><span class="art-date">Mar 6, 2025</span></div>
+      <h3 class="art-title">Signature Color Grading: Making a Preset Sound Like a Voice</h3>
+      <p class="art-excerpt">What separates editing that elevates from editing that announces itself? A breakdown of the color grading philosophy behind our most-recognised work.</p>
+      <a href="#" class="read-link" style="font-size:11px;">Read More →</a>
+    </div>
+    <div class="article-card">
+      <div class="art-img">
+        <img src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80" alt="Low Light" />
+        <span class="read-time">5 min</span>
+      </div>
+      <div class="art-tags"><span class="art-tag">Technique</span><span class="art-date">Feb 14, 2025</span></div>
+      <h3 class="art-title">Low Light Photography Without Noise</h3>
+      <p class="art-excerpt">Receptions, candlelit ceremonies, evening concerts — the camera does not love low light. Here's how we negotiate with darkness and still come back with usable frames.</p>
+      <a href="#" class="read-link" style="font-size:11px;">Read More →</a>
+    </div>
+  </div>
+</div>
+
+<!-- INSPIRATION QUOTE -->
+<div class="inspiration-block">
+  <div class="insp-inner">
+    <p class="insp-label">Words to Shoot By</p>
+    <div class="insp-divider"></div>
+    <p class="insp-quote">"Photography is the story I fail to put into words."</p>
+    <p class="insp-author">— Destin Sparks</p>
+  </div>
+</div>
+
+<!-- PHOTO INSPIRATION GRID -->
+<div class="inspo-grid">
+  <p class="section-label">Visual Inspirations</p>
+  <h2 class="inspo-grid-title">Behind Every Frame</h2>
+  <p class="inspo-grid-sub">Hover to discover the story and inspiration behind each photograph.</p>
+  <div class="photo-inspo-grid">
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=80" alt="Mountains" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Wildlife</p>
+        <p class="inspo-name">Silent Peaks, Munnar</p>
+        <p class="inspo-desc">Shot at 5:40 AM. The fog wasn't planned — it arrived and stayed just long enough.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80" alt="Wedding" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Wedding</p>
+        <p class="inspo-name">The First Look</p>
+        <p class="inspo-desc">Neither of them knew we were watching. That's why it works.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1524863479829-916d8e77f114?w=500&q=80" alt="Portrait" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Portrait</p>
+        <p class="inspo-name">Power of Smile</p>
+        <p class="inspo-desc">We asked her to think of someone she loved. This is what happened next.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80" alt="Event" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Event</p>
+        <p class="inspo-name">The Keynote Moment</p>
+        <p class="inspo-desc">Three seconds into the standing ovation. The most honest reaction in the room.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1456926631375-92c8ce872def?w=500&q=80" alt="Bird" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Wildlife</p>
+        <p class="inspo-name">Voice of Birds</p>
+        <p class="inspo-desc">Waited 2 hours in the wetlands. The bird stayed for 4 seconds.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=500&q=80" alt="Sports" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Sports</p>
+        <p class="inspo-name">Finish Line</p>
+        <p class="inspo-desc">The win was in the stride, not the finish. We caught it a step early.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=500&q=80" alt="Candid" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Wedding</p>
+        <p class="inspo-name">The Unposed Moment</p>
+        <p class="inspo-desc">Not on the shot list. Happened between two scheduled moments. Made the album cover.</p>
+      </div>
+    </div>
+    <div class="inspo-item">
+      <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&q=80" alt="Forest" />
+      <div class="inspo-overlay">
+        <p class="inspo-theme">Nature</p>
+        <p class="inspo-name">Into the Green</p>
+        <p class="inspo-desc">The Anamalai hills, post-monsoon. Every breath tasted like rain and chlorophyll.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MORE ARTICLES -->
+<div class="articles-section" style="background: var(--bg2);">
+  <p class="section-label">Behind the Shot</p>
+  <div class="articles-grid">
+    <div class="article-card">
+      <div class="art-img">
+        <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=600&q=80" alt="Wildlife" />
+        <span class="read-time">9 min</span>
+      </div>
+      <div class="art-tags"><span class="art-tag">Behind the Shot</span><span class="art-date">Jan 20, 2025</span></div>
+      <h3 class="art-title">Two Hours in the Wetlands — For Four Seconds of Flight</h3>
+      <p class="art-excerpt">Wildlife photography is mostly waiting. We went to Vedanthangal with a 600mm lens, a flask of tea, and patience we hadn't known we had.</p>
+      <a href="#" class="read-link" style="font-size:11px;">Read More →</a>
+    </div>
+    <div class="article-card">
+      <div class="art-img">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Wedding ceremony" />
+        <span class="read-time">6 min</span>
+      </div>
+      <div class="art-tags"><span class="art-tag">Stories</span><span class="art-date">Dec 8, 2024</span></div>
+      <h3 class="art-title">The Shot That Wasn't on the List</h3>
+      <p class="art-excerpt">It happened between two scheduled set-pieces. Nobody called it. Nobody saw it coming. It became the photograph the couple put in their hallway.</p>
+      <a href="#" class="read-link" style="font-size:11px;">Read More →</a>
+    </div>
+    <div class="article-card">
+      <div class="art-img">
+        <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600&q=80" alt="Concert" />
+        <span class="read-time">4 min</span>
+      </div>
+      <div class="art-tags"><span class="art-tag">Gear</span><span class="art-date">Nov 3, 2024</span></div>
+      <h3 class="art-title">Our Bag for Live Event Photography in 2025</h3>
+      <p class="art-excerpt">Fast glass, silent shutters, and backup bodies — the honest kit list we actually carry into concerts, conferences, and cultural performances.</p>
+      <a href="#" class="read-link" style="font-size:11px;">Read More →</a>
+    </div>
+  </div>
+</div>
+
+<div class="load-more-wrap">
+  <button class="btn-ghost">Load More Articles</button>
+</div>
+
+<footer>
+  <span>© 2026 ShutterVerse. All rights reserved.</span>
+  <a href="contact.html" style="color:var(--accent);text-decoration:none;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;">Get in Touch →</a>
+</footer>
+
+<script>
+  // Filter tag toggle
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  // Sticky nav
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background = window.scrollY > 40 ? 'rgba(12,12,10,0.98)' : 'rgba(12,12,10,0.92)';
+  });
+</script>
+</body>
+</html>

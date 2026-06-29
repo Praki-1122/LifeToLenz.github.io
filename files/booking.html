@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Book a Session | ShutterVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0c0a; --bg2: #111110; --bg3: #161614;
+    --fg: #f0ede6; --fg2: #a09d96; --fg3: #5a5854;
+    --accent: #c9a96e; --accent2: #e8d5b0;
+    --border: rgba(240,237,230,0.08); --border2: rgba(240,237,230,0.15);
+    --selected: rgba(201,169,110,0.12);
+  }
+  body { background: var(--bg); color: var(--fg); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.7; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 3rem; background: rgba(12,12,10,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--fg); text-decoration: none; }
+  .logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 2.5rem; list-style: none; }
+  nav a { color: var(--fg2); text-decoration: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  nav a:hover, nav a.active { color: var(--fg); }
+  .nav-cta { border: 1px solid var(--accent); color: var(--accent) !important; padding: 0.5rem 1.25rem; border-radius: 2px; font-size: 12px; letter-spacing: 0.1em; transition: background 0.2s, color 0.2s; }
+  .nav-cta:hover { background: var(--accent); color: var(--bg) !important; }
+
+  /* HERO */
+  .booking-hero { padding: 9rem 3rem 4rem; background: linear-gradient(135deg, var(--bg2) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .hero-left .eyebrow { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero-left h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 300; line-height: 1.05; color: var(--fg); margin-bottom: 1.25rem; }
+  .hero-left h1 em { font-style: italic; color: var(--accent2); }
+  .hero-left p { color: var(--fg3); font-size: 0.95rem; max-width: 400px; line-height: 1.8; }
+  .hero-steps { display: flex; flex-direction: column; gap: 1.25rem; }
+  .step { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .step-num { width: 36px; height: 36px; border: 1px solid var(--border2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: 'Cormorant Garamond', serif; color: var(--accent); flex-shrink: 0; font-weight: 400; }
+  .step-text h4 { font-size: 14px; color: var(--fg); font-weight: 500; margin-bottom: 0.2rem; }
+  .step-text p { font-size: 12px; color: var(--fg3); line-height: 1.6; }
+
+  /* PROGRESS STEPPER */
+  .stepper { padding: 1.5rem 3rem; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0; }
+  .step-tab { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.5rem 0.5rem 0; cursor: pointer; }
+  .step-tab:first-child { padding-left: 0; }
+  .step-circle { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--fg3); transition: all 0.2s; flex-shrink: 0; }
+  .step-tab.active .step-circle { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+  .step-tab.done .step-circle { background: rgba(201,169,110,0.15); border-color: var(--accent); color: var(--accent); }
+  .step-tab-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg3); }
+  .step-tab.active .step-tab-label { color: var(--fg); }
+  .step-connector { flex: 1; height: 1px; background: var(--border); max-width: 60px; }
+
+  /* MAIN BOOKING AREA */
+  .booking-main { display: grid; grid-template-columns: 1fr 340px; gap: 0; min-height: 60vh; }
+
+  /* FORM PANELS */
+  .form-panel { padding: 3rem; border-right: 1px solid var(--border); }
+  .panel-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--fg); margin-bottom: 0.5rem; }
+  .panel-sub { font-size: 0.88rem; color: var(--fg3); margin-bottom: 2.5rem; }
+
+  /* STEP 1: TYPE CARDS */
+  .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+  .type-card { border: 1px solid var(--border); border-radius: 2px; padding: 1.5rem 1.25rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; }
+  .type-card:hover { border-color: var(--border2); }
+  .type-card.selected { border-color: var(--accent); background: var(--selected); }
+  .type-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+  .type-icon { font-size: 1.6rem; margin-bottom: 0.75rem; display: block; }
+  .type-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; color: var(--fg); margin-bottom: 0.35rem; }
+  .type-desc { font-size: 11px; color: var(--fg3); line-height: 1.6; }
+  .type-check { position: absolute; top: 0.75rem; right: 0.75rem; width: 18px; height: 18px; border: 1px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; transition: all 0.2s; }
+  .type-card.selected .type-check { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+  /* STEP 2: EVENT DETAILS */
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label { display: block; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg3); margin-bottom: 0.6rem; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 2px; color: var(--fg); font-family: 'DM Sans', sans-serif;
+    font-size: 14px; padding: 0.85rem 1rem; outline: none; transition: border-color 0.2s;
+    appearance: none; -webkit-appearance: none;
+  }
+  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%235a5854'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; cursor: pointer; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--fg3); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+  /* PACKAGE CARDS */
+  .package-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .pkg-card { border: 1px solid var(--border); border-radius: 2px; padding: 1.75rem 1.5rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; }
+  .pkg-card:hover { border-color: var(--border2); }
+  .pkg-card.selected { border-color: var(--accent); background: var(--selected); }
+  .pkg-badge { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); background: rgba(201,169,110,0.1); padding: 2px 8px; border-radius: 1px; display: inline-block; margin-bottom: 0.75rem; }
+  .pkg-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: var(--fg); margin-bottom: 0.25rem; }
+  .pkg-price { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 1rem; }
+  .pkg-price small { font-size: 0.75rem; color: var(--fg3); font-family: 'DM Sans', sans-serif; }
+  .pkg-features { list-style: none; }
+  .pkg-features li { font-size: 12px; color: var(--fg3); margin-bottom: 0.4rem; padding-left: 1rem; position: relative; }
+  .pkg-features li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-size: 10px; top: 1px; }
+
+  /* ADDON TOGGLES */
+  .addon-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+  .addon-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: 2px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .addon-item:hover { border-color: var(--border2); }
+  .addon-item.selected { border-color: var(--accent); background: var(--selected); }
+  .addon-left { display: flex; gap: 0.75rem; align-items: center; }
+  .addon-icon { font-size: 1.1rem; }
+  .addon-text h4 { font-size: 13px; color: var(--fg); font-weight: 500; }
+  .addon-text p { font-size: 11px; color: var(--fg3); }
+  .addon-price { font-size: 13px; color: var(--accent); font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+  .addon-check { width: 20px; height: 20px; border: 1px solid var(--border2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: transparent; transition: all 0.2s; margin-left: 1rem; flex-shrink: 0; }
+  .addon-item.selected .addon-check { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+  /* STEP NAVIGATION */
+  .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .btn-back { background: none; border: 1px solid var(--border); color: var(--fg3); padding: 0.85rem 1.75rem; border-radius: 2px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .btn-back:hover { border-color: var(--border2); color: var(--fg); }
+  .btn-next { background: var(--accent); color: var(--bg); border: none; padding: 0.85rem 2.25rem; border-radius: 2px; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .btn-next:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  /* SIDEBAR SUMMARY */
+  .booking-sidebar { padding: 2rem 2rem; background: var(--bg2); }
+  .sidebar-title { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg3); margin-bottom: 1.5rem; }
+  .summary-card { border: 1px solid var(--border); border-radius: 2px; padding: 1.5rem; margin-bottom: 1rem; background: var(--bg); }
+  .summary-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg3); margin-bottom: 0.5rem; }
+  .summary-value { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--fg); font-weight: 300; }
+  .summary-value.placeholder { color: var(--fg3); font-style: italic; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; }
+  .price-breakdown { border: 1px solid var(--border); border-radius: 2px; padding: 1.5rem; margin-top: 1.5rem; }
+  .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; font-size: 13px; }
+  .price-row span { color: var(--fg3); }
+  .price-row strong { color: var(--fg2); }
+  .price-total { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .price-total span { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg3); }
+  .price-total strong { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--accent); font-weight: 300; }
+  .trust-badges { margin-top: 1.5rem; }
+  .trust-item { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; }
+  .trust-icon { font-size: 1rem; }
+  .trust-text { font-size: 12px; color: var(--fg3); line-height: 1.5; }
+  .trust-text strong { color: var(--fg2); font-weight: 500; display: block; }
+
+  /* SUCCESS STATE */
+  .success-panel { display: none; text-align: center; padding: 4rem 3rem; }
+  .success-icon { font-size: 3rem; margin-bottom: 1.5rem; }
+  .success-panel h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: var(--fg); margin-bottom: 1rem; }
+  .success-panel h2 em { font-style: italic; color: var(--accent2); }
+  .success-panel p { color: var(--fg3); max-width: 450px; margin: 0 auto 2rem; font-size: 0.95rem; line-height: 1.8; }
+
+  /* HIDDEN STEPS */
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--fg3); }
+
+  @media (max-width: 900px) {
+    nav ul { display: none; }
+    nav { padding: 1rem 1.5rem; }
+    .booking-hero { grid-template-columns: 1fr; gap: 2rem; padding: 8rem 1.5rem 3rem; }
+    .booking-main { grid-template-columns: 1fr; }
+    .booking-sidebar { border-top: 1px solid var(--border); }
+    .form-panel { padding: 2rem 1.5rem; }
+    .type-grid { grid-template-columns: repeat(2, 1fr); }
+    .package-grid { grid-template-columns: 1fr; }
+    .form-row-2 { grid-template-columns: 1fr; }
+    .stepper { padding: 1rem 1.5rem; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Shutter<span>Verse</span></a>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="work.html">Work</a></li>
+    <li><a href="articles.html">Journal</a></li>
+    <li><a href="booking.html" class="active">Book</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<div class="booking-hero">
+  <div class="hero-left">
+    <p class="eyebrow">Request a Session</p>
+    <h1>Let's Plan<br>Your <em>Shoot</em></h1>
+    <p>Fill in the details below and we'll get back to you within 24 hours with availability and a personalised quote.</p>
+  </div>
+  <div class="hero-steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><h4>Choose Photography Type</h4><p>Select the category that best describes your event or session.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><h4>Share Event Details</h4><p>Date, location, scale, and any vision you have in mind.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><h4>Pick a Package</h4><p>Choose a starting package and add any extras you need.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text"><h4>Confirm & Submit</h4><p>We review and confirm availability within one business day.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEPPER -->
+<div class="stepper">
+  <div class="step-tab active" id="tab-1" onclick="goToStep(1)">
+    <div class="step-circle">1</div>
+    <span class="step-tab-label">Type</span>
+  </div>
+  <div class="step-connector"></div>
+  <div class="step-tab" id="tab-2" onclick="goToStep(2)">
+    <div class="step-circle">2</div>
+    <span class="step-tab-label">Details</span>
+  </div>
+  <div class="step-connector"></div>
+  <div class="step-tab" id="tab-3" onclick="goToStep(3)">
+    <div class="step-circle">3</div>
+    <span class="step-tab-label">Package</span>
+  </div>
+  <div class="step-connector"></div>
+  <div class="step-tab" id="tab-4" onclick="goToStep(4)">
+    <div class="step-circle">4</div>
+    <span class="step-tab-label">Confirm</span>
+  </div>
+</div>
+
+<div class="booking-main">
+  <!-- FORM -->
+  <div class="form-panel">
+
+    <!-- STEP 1: TYPE -->
+    <div class="step-content active" id="step-1">
+      <h2 class="panel-title">What kind of photography?</h2>
+      <p class="panel-sub">Select the category that best describes what you're planning.</p>
+      <div class="type-grid">
+        <div class="type-card" onclick="selectType(this, 'Wedding')">
+          <input type="radio" name="type" value="Wedding" />
+          <span class="type-icon">💍</span>
+          <span class="type-check">✓</span>
+          <p class="type-name">Wedding</p>
+          <p class="type-desc">Full-day coverage, reception, and candid storytelling.</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'Event')">
+          <input type="radio" name="type" value="Event" />
+          <span class="type-icon">🎉</span>
+          <span class="type-check">✓</span>
+          <p class="type-name">Event</p>
+          <p class="type-desc">Corporate events, cultural shows, conferences, launches.</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'Portrait')">
+          <input type="radio" name="type" value="Portrait" />
+          <span class="type-icon">🧍</span>
+          <span class="type-check">✓</span>
+          <p class="type-name">Portrait</p>
+          <p class="type-desc">Individual, family, or professional portrait sessions.</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'Corporate')">
+          <input type="radio" name="type" value="Corporate" />
+          <span class="type-icon">🏢</span>
+          <span class="type-check">✓</span>
+          <p class="type-name">Corporate</p>
+          <p class="type-desc">Team photos, brand shoots, product photography.</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'Wildlife')">
+          <input type="radio" name="type" value="Wildlife" />
+          <span class="type-icon">🦅</span>
+          <span class="type-check">✓</span>
+          <p class="type-name">Wildlife</p>
+          <p class="type-desc">Nature, birds, and landscape photography expeditions.</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'Sports')">
+          <input type="radio" name="type" value="Sports" />
+          <span class="type-icon">🏃</span>
+          <span class="type-check">✓</span>
+          <p class="type-name">Sports</p>
+          <p class="type-desc">Athletic events, school sports meets, action photography.</p>
+        </div>
+      </div>
+      <div class="step-nav">
+        <span></span>
+        <button class="btn-next" onclick="goToStep(2)">Next: Event Details →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: EVENT DETAILS -->
+    <div class="step-content" id="step-2">
+      <h2 class="panel-title">Tell us about the event</h2>
+      <p class="panel-sub">The more detail you share, the better we can prepare.</p>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Your Full Name *</label>
+          <input type="text" placeholder="Priya Mehta" id="b-name" oninput="updateSummary()" required />
+        </div>
+        <div class="form-group">
+          <label>Phone / WhatsApp *</label>
+          <input type="tel" placeholder="+91 98765 43210" id="b-phone" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" placeholder="priya@example.com" id="b-email" required />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Event Date *</label>
+          <input type="date" id="b-date" oninput="updateSummary()" required />
+        </div>
+        <div class="form-group">
+          <label>Event Duration</label>
+          <select id="b-duration" oninput="updateSummary()">
+            <option value="">Select…</option>
+            <option>2–3 Hours</option>
+            <option>Half Day (4–5 Hours)</option>
+            <option>Full Day (6–8 Hours)</option>
+            <option>Multi-Day</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Venue / Location *</label>
+          <input type="text" placeholder="Venue name or city" id="b-location" oninput="updateSummary()" required />
+        </div>
+        <div class="form-group">
+          <label>Expected Guests / Subjects</label>
+          <select id="b-guests">
+            <option value="">Select range…</option>
+            <option>1–10</option>
+            <option>10–50</option>
+            <option>50–200</option>
+            <option>200–500</option>
+            <option>500+</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Indoor / Outdoor</label>
+        <select id="b-venue-type">
+          <option value="">Select…</option>
+          <option>Fully Indoor</option>
+          <option>Fully Outdoor</option>
+          <option>Mix of Both</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vision & Special Requests</label>
+        <textarea placeholder="Describe any mood, style references, must-capture moments, or anything specific you'd like us to know…" id="b-notes"></textarea>
+      </div>
+      <div class="form-group">
+        <label>How did you find us?</label>
+        <select>
+          <option value="">Select…</option>
+          <option>Instagram</option>
+          <option>Word of Mouth</option>
+          <option>Google Search</option>
+          <option>Facebook</option>
+          <option>Previous Client</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="step-nav">
+        <button class="btn-back" onclick="goToStep(1)">← Back</button>
+        <button class="btn-next" onclick="goToStep(3)">Next: Choose Package →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: PACKAGE -->
+    <div class="step-content" id="step-3">
+      <h2 class="panel-title">Choose your package</h2>
+      <p class="panel-sub">All packages include professional editing and an online gallery. Prices are starting points — final quote after consultation.</p>
+      <div class="package-grid">
+        <div class="pkg-card" onclick="selectPkg(this, 'Essential', '₹8,000')">
+          <span class="pkg-badge">Starter</span>
+          <p class="pkg-name">Essential</p>
+          <p class="pkg-price">₹8,000 <small>starting</small></p>
+          <ul class="pkg-features">
+            <li>Up to 3 hours</li>
+            <li>100+ edited photos</li>
+            <li>Online gallery</li>
+            <li>1 photographer</li>
+            <li>7-day delivery</li>
+          </ul>
+        </div>
+        <div class="pkg-card" onclick="selectPkg(this, 'Classic', '₹15,000')" style="border-color:rgba(201,169,110,0.3);">
+          <span class="pkg-badge" style="background:rgba(201,169,110,0.18);">Popular</span>
+          <p class="pkg-name">Classic</p>
+          <p class="pkg-price">₹15,000 <small>starting</small></p>
+          <ul class="pkg-features">
+            <li>Up to 6 hours</li>
+            <li>250+ edited photos</li>
+            <li>Online gallery + USB</li>
+            <li>1 photographer + assistant</li>
+            <li>5-day delivery</li>
+          </ul>
+        </div>
+        <div class="pkg-card" onclick="selectPkg(this, 'Premium', '₹28,000')">
+          <span class="pkg-badge">Full Day</span>
+          <p class="pkg-name">Premium</p>
+          <p class="pkg-price">₹28,000 <small>starting</small></p>
+          <ul class="pkg-features">
+            <li>Full day (8+ hours)</li>
+            <li>500+ edited photos</li>
+            <li>Highlights video</li>
+            <li>2 photographers</li>
+            <li>3-day delivery</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--fg);margin-bottom:0.5rem;">Add-ons</h3>
+      <p style="font-size:0.85rem;color:var(--fg3);margin-bottom:1.25rem;">Enhance your package with these optional additions.</p>
+      <div class="addon-list">
+        <div class="addon-item" onclick="toggleAddon(this, 'Drone / Aerial', '₹4,000')">
+          <div class="addon-left">
+            <span class="addon-icon">🚁</span>
+            <div class="addon-text"><h4>Drone / Aerial Photography</h4><p>Cinematic overhead shots of the venue and event</p></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="addon-price">+₹4,000</span>
+            <div class="addon-check">✓</div>
+          </div>
+        </div>
+        <div class="addon-item" onclick="toggleAddon(this, 'Highlight Reel', '₹5,000')">
+          <div class="addon-left">
+            <span class="addon-icon">🎬</span>
+            <div class="addon-text"><h4>Highlight Reel (2–3 min video)</h4><p>Cinematic short film of the event with music</p></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="addon-price">+₹5,000</span>
+            <div class="addon-check">✓</div>
+          </div>
+        </div>
+        <div class="addon-item" onclick="toggleAddon(this, 'Printed Album', '₹3,500')">
+          <div class="addon-left">
+            <span class="addon-icon">📖</span>
+            <div class="addon-text"><h4>Printed Photo Album</h4><p>30-page premium hardbound album (A4 size)</p></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="addon-price">+₹3,500</span>
+            <div class="addon-check">✓</div>
+          </div>
+        </div>
+        <div class="addon-item" onclick="toggleAddon(this, 'Same-Day Preview', '₹2,000')">
+          <div class="addon-left">
+            <span class="addon-icon">⚡</span>
+            <div class="addon-text"><h4>Same-Day Preview Gallery</h4><p>10–15 quick-edited photos shared within hours of the event</p></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="addon-price">+₹2,000</span>
+            <div class="addon-check">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goToStep(2)">← Back</button>
+        <button class="btn-next" onclick="goToStep(4)">Next: Review & Confirm →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: CONFIRM -->
+    <div class="step-content" id="step-4">
+      <h2 class="panel-title">Review & confirm</h2>
+      <p class="panel-sub">Check all details before submitting. We'll be in touch within 24 hours to confirm availability.</p>
+
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:2px;padding:1.75rem;margin-bottom:1.5rem;">
+        <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg3);margin-bottom:1.25rem;">Your Booking Summary</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div><p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg3);margin-bottom:0.3rem;">Photography Type</p><p id="confirm-type" style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--fg);">—</p></div>
+          <div><p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg3);margin-bottom:0.3rem;">Package</p><p id="confirm-pkg" style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--fg);">—</p></div>
+          <div><p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg3);margin-bottom:0.3rem;">Date</p><p id="confirm-date" style="font-size:0.95rem;color:var(--fg2);">—</p></div>
+          <div><p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg3);margin-bottom:0.3rem;">Location</p><p id="confirm-location" style="font-size:0.95rem;color:var(--fg2);">—</p></div>
+          <div><p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg3);margin-bottom:0.3rem;">Your Name</p><p id="confirm-name" style="font-size:0.95rem;color:var(--fg2);">—</p></div>
+          <div><p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg3);margin-bottom:0.3rem;">Add-ons</p><p id="confirm-addons" style="font-size:0.9rem;color:var(--fg3);">None selected</p></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Anything else to add?</label>
+        <textarea placeholder="Final notes, questions, or special instructions…" style="min-height:80px;"></textarea>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:1.5rem;">
+        <input type="checkbox" id="terms" style="width:16px;height:16px;margin-top:2px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;" required />
+        <label for="terms" style="font-size:13px;color:var(--fg3);cursor:pointer;">I understand this is an availability request, not a confirmed booking. Final confirmation and invoice will follow after ShutterVerse reviews the details.</label>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goToStep(3)">← Back</button>
+        <button class="btn-next" onclick="submitBooking()">Submit Request ✓</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-panel" id="success-panel">
+      <div class="success-icon">📸</div>
+      <h2>Request <em>Received!</em></h2>
+      <p>Thank you for reaching out. We've received your booking request and will review it shortly. Expect a personal reply within 24 hours with availability confirmation and next steps.</p>
+      <a href="index.html" style="display:inline-block;background:var(--accent);color:var(--bg);padding:0.9rem 2rem;border-radius:2px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;font-family:'DM Sans',sans-serif;font-weight:500;">Back to Home</a>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="booking-sidebar">
+    <p class="sidebar-title">Booking Summary</p>
+
+    <div class="summary-card">
+      <p class="summary-label">Photography Type</p>
+      <p class="summary-value placeholder" id="sum-type">Not selected yet</p>
+    </div>
+    <div class="summary-card">
+      <p class="summary-label">Date</p>
+      <p class="summary-value placeholder" id="sum-date">Not set</p>
+    </div>
+    <div class="summary-card">
+      <p class="summary-label">Location</p>
+      <p class="summary-value placeholder" id="sum-loc">Not specified</p>
+    </div>
+    <div class="summary-card">
+      <p class="summary-label">Package</p>
+      <p class="summary-value placeholder" id="sum-pkg">Not selected</p>
+    </div>
+
+    <div class="price-breakdown">
+      <p style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg3);margin-bottom:1rem;">Estimated Pricing</p>
+      <div class="price-row"><span>Base Package</span><strong id="price-base">—</strong></div>
+      <div class="price-row" id="addon-rows"></div>
+      <div class="price-total"><span>Estimated Total</span><strong id="price-total">—</strong></div>
+      <p style="font-size:10px;color:var(--fg3);margin-top:0.75rem;line-height:1.6;">Final pricing confirmed after consultation. Travel fees may apply for locations outside Coimbatore.</p>
+    </div>
+
+    <div class="trust-badges" style="margin-top:2rem;">
+      <div class="trust-item"><span class="trust-icon">🔒</span><div class="trust-text"><strong>Secure & Private</strong>Your details are never shared.</div></div>
+      <div class="trust-item"><span class="trust-icon">⚡</span><div class="trust-text"><strong>24-Hour Response</strong>We reply to every inquiry.</div></div>
+      <div class="trust-item"><span class="trust-icon">🤝</span><div class="trust-text"><strong>No Commitment Yet</strong>This is a request, not a payment.</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 ShutterVerse. All rights reserved.</span>
+  <a href="contact.html" style="color:var(--accent);text-decoration:none;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;">Have questions? Contact us →</a>
+</footer>
+
+<script>
+  let currentStep = 1;
+  let selectedType = '';
+  let selectedPkg = '';
+  let selectedPkgPrice = 0;
+  let addons = [];
+  let addonTotal = 0;
+  const pkgPrices = { 'Essential': 8000, 'Classic': 15000, 'Premium': 28000 };
+  const addonPrices = { 'Drone / Aerial': 4000, 'Highlight Reel': 5000, 'Printed Album': 3500, 'Same-Day Preview': 2000 };
+
+  function goToStep(n) {
+    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.step-tab').forEach((t, i) => {
+      t.classList.remove('active', 'done');
+      if (i + 1 < n) t.classList.add('done');
+      if (i + 1 === n) t.classList.add('active');
+    });
+    const el = document.getElementById('step-' + n);
+    if (el) { el.classList.add('active'); currentStep = n; }
+    window.scrollTo({ top: document.querySelector('.stepper').offsetTop - 80, behavior: 'smooth' });
+    updateConfirm();
+  }
+
+  function selectType(card, type) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedType = type;
+    document.getElementById('sum-type').textContent = type;
+    document.getElementById('sum-type').classList.remove('placeholder');
+  }
+
+  function selectPkg(card, name, price) {
+    document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedPkg = name;
+    selectedPkgPrice = pkgPrices[name] || 0;
+    document.getElementById('sum-pkg').textContent = name + ' — ' + price;
+    document.getElementById('sum-pkg').classList.remove('placeholder');
+    document.getElementById('price-base').textContent = price;
+    updateTotal();
+  }
+
+  function toggleAddon(item, name, price) {
+    item.classList.toggle('selected');
+    const priceNum = addonPrices[name] || 0;
+    if (item.classList.contains('selected')) {
+      addons.push(name);
+      addonTotal += priceNum;
+    } else {
+      addons = addons.filter(a => a !== name);
+      addonTotal -= priceNum;
+    }
+    updateTotal();
+  }
+
+  function updateTotal() {
+    const total = selectedPkgPrice + addonTotal;
+    document.getElementById('price-total').textContent = total > 0 ? '₹' + total.toLocaleString('en-IN') : '—';
+    // Addon rows
+    const row = document.getElementById('addon-rows');
+    row.innerHTML = addons.map(a => `<div class="price-row"><span>${a}</span><strong>+₹${addonPrices[a]?.toLocaleString('en-IN')}</strong></div>`).join('');
+  }
+
+  function updateSummary() {
+    const date = document.getElementById('b-date').value;
+    const loc = document.getElementById('b-location').value;
+    if (date) {
+      const d = new Date(date);
+      document.getElementById('sum-date').textContent = d.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+      document.getElementById('sum-date').classList.remove('placeholder');
+    }
+    if (loc) {
+      document.getElementById('sum-loc').textContent = loc;
+      document.getElementById('sum-loc').classList.remove('placeholder');
+    }
+  }
+
+  function updateConfirm() {
+    document.getElementById('confirm-type').textContent = selectedType || '—';
+    document.getElementById('confirm-pkg').textContent = selectedPkg || '—';
+    const d = document.getElementById('b-date')?.value;
+    document.getElementById('confirm-date').textContent = d ? new Date(d).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}) : '—';
+    document.getElementById('confirm-location').textContent = document.getElementById('b-location')?.value || '—';
+    document.getElementById('confirm-name').textContent = document.getElementById('b-name')?.value || '—';
+    document.getElementById('confirm-addons').textContent = addons.length ? addons.join(', ') : 'None selected';
+  }
+
+  function submitBooking() {
+    if (!document.getElementById('terms').checked) {
+      alert('Please confirm the terms before submitting.');
+      return;
+    }
+    // Build mailto
+    const name = document.getElementById('b-name').value;
+    const email = document.getElementById('b-email').value;
+    const phone = document.getElementById('b-phone').value;
+    const date = document.getElementById('b-date').value;
+    const loc = document.getElementById('b-location').value;
+    const dur = document.getElementById('b-duration').value;
+    const notes = document.getElementById('b-notes').value;
+
+    const body = `BOOKING REQUEST — ShutterVerse
+
+Photography Type: ${selectedType}
+Package: ${selectedPkg}
+Add-ons: ${addons.join(', ') || 'None'}
+Estimated Total: ₹${(selectedPkgPrice + addonTotal).toLocaleString('en-IN')}
+
+Name: ${name}
+Phone: ${phone}
+Email: ${email}
+Date: ${date}
+Location: ${loc}
+Duration: ${dur}
+
+Notes:
+${notes}`;
+
+    window.location.href = `mailto:hello@shutterverse.in?subject=${encodeURIComponent('Booking Request – ' + selectedType + ' – ' + name)}&body=${encodeURIComponent(body)}`;
+
+    // Show success
+    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+    document.querySelector('.stepper').style.display = 'none';
+    document.getElementById('success-panel').style.display = 'block';
+  }
+
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background = window.scrollY > 40 ? 'rgba(12,12,10,0.98)' : 'rgba(12,12,10,0.92)';
+  });
+</script>
+</body>
+</html>
